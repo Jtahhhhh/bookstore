@@ -1,0 +1,60 @@
+services:
+  web:
+    build: .
+    image: bookstore:latest
+    container_name: bookstore_web
+    restart: unless-stopped
+
+    ports:
+      - "3000:3000"
+
+    environment:
+      RAILS_ENV: development
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
+      DATABASE_URL: postgres://postgres:password@db:5432/bookstore_development
+      REDIS_URL: redis://redis:6379/0
+
+    depends_on:
+      - db
+      - redis
+
+    volumes:
+      - .:/rails
+      - bundle_data:/usr/local/bundle
+      - storage:/rails/storage
+
+    command: ./bin/rails server -b 0.0.0.0 -p 3000
+
+  db:
+    image: postgres:17
+    container_name: bookstore_db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: bookstore_development
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    container_name: bookstore_redis
+    restart: unless-stopped
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
+  storage:
+  bundle_data:

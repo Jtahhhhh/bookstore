@@ -1,0 +1,38 @@
+<div class="form-page">
+  <div class="form-card">
+
+    <%= form_with model: [:admin, @category], local: true, class: "custom-form" do |f| %>
+
+      <% if @category.errors.any? %>
+        <div class="error-box">
+          <h4>
+            <%= pluralize(@category.errors.count, "error") %> prohibited this category from being saved:
+          </h4>
+
+          <ul>
+            <% @category.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <h3 class="name"><%= @category.name %></h3>
+
+      <p class="bio"><%= @category.slug%></p>
+
+      <div class="actions">
+        <%= link_to "Edit", edit_admin_category_path(@category), class: "btn-warning" %>
+
+        <%= link_to "Delete",
+            admin_category_path(@category),
+            data: {
+              turbo_method: :delete,
+              turbo_confirm: "Are you sure?"
+            },
+            class: "btn-danger" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

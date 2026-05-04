@@ -1,0 +1,112 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Books</h1>
+    <p class="page-subtitle">Manage all books in your store</p>
+  </div>
+
+  <%= link_to "＋ New Book", new_admin_book_path, class: "btn-primary" %>
+</div>
+
+<div class="filter-bar">
+  <%= form_with url: admin_books_path,
+      method: :get,
+      local: true,
+      class: "filter-form" do |f| %>
+
+    <div class="filter-group">
+      <%= f.text_field :keyword,
+          value: params[:keyword],
+          placeholder: "Search books...",
+          class: "filter-input" %>
+    </div>
+
+    <div class="filter-group">
+      <%= f.select :author_id,
+          options_from_collection_for_select(
+            Author.order(:name),
+            :id,
+            :name,
+            params[:author_id]
+          ),
+          { prompt: "All Authors" },
+          class: "filter-select" %>
+    </div>
+
+    <div class="filter-group">
+      <%= f.select :category_id,
+          options_from_collection_for_select(
+            Category.order(:name),
+            :id,
+            :name,
+            params[:category_id]
+          ),
+          { prompt: "All Categories" },
+          class: "filter-select" %>
+    </div>
+
+    <div class="filter-group">
+      <%= f.select :published,
+          options_for_select(
+            [
+              ["Published", true],
+              ["Unpublished", false]
+            ],
+            params[:published]
+          ),
+          { prompt: "All Status" },
+          class: "filter-select" %>
+    </div>
+
+
+    <div class="filter-actions">
+      <%= f.submit "Filter", class: "btn-primary" %>
+
+      <%= link_to "Reset",
+          admin_books_path,
+          class: "btn-secondary" %>
+    </div>
+
+  <% end %>
+</div>
+
+<div class="book-grid">
+  <% @books.each do |book| %>
+    <div class="book-card">
+      <div class="book-card-body">
+        <div class="book-info">
+          <h3><%= book.title %></h3>
+
+          <p class="name">
+            by <%= book.author.name %>
+          </p>
+          <% if book.respond_to?(:description) && book.description.present? %>
+            <p class="book-description">
+              <%= truncate(book.description, length: 120) %>
+            </p>
+          <% end %>
+          <% if book.respond_to?(:categories) && book.categories.any? %>
+            <div class="book-categories">
+              <% book.categories.each do |category| %>
+                <span class="category-tag"><%= category.name %></span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="book-actions">
+          <%= link_to "View", admin_book_path(book), class: "btn-secondary" %>
+
+          <%= link_to "Edit", edit_admin_book_path(book), class: "btn-warning" %>
+
+          <%= link_to "Delete",
+              admin_book_path(book),
+              data: {
+                turbo_method: :delete,
+                turbo_confirm: "Are you sure?"
+              },
+              class: "btn-danger" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

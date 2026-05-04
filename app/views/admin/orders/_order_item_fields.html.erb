@@ -1,0 +1,25 @@
+<div class="order-item-row">
+  <%= item_form.collection_select :book_id,
+      Book.order(:title),
+      :id,
+      :title,
+      { prompt: "Select book" },
+      class: "form-input" %>
+
+  <%= item_form.number_field :quantity,
+      min: 1,
+      value: item_form.object.quantity || 1,
+      class: "form-input",
+      placeholder: "Quantity" %>
+      
+  <% if item_form.object.persisted? %>
+    <label class="checkbox-item">
+      <%= item_form.check_box :_destroy %>
+      <span>Remove</span>
+    </label>
+  <% else %>
+    <button type="button" class="btn-danger remove-order-item">
+      Remove
+    </button>
+  <% end %>
+</div>

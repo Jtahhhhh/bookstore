@@ -1,0 +1,90 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Order #<%= @order.id %></h1>
+    <p class="page-subtitle">Order details</p>
+  </div>
+
+  <%= link_to "← Back to Orders", admin_orders_path, class: "btn-secondary" %>
+</div>
+
+<div class="order-detail">
+  <!-- Customer info -->
+  <div class="order-info">
+    <div>
+      <strong>Name:</strong> <%= @order.customer_name %>
+    </div>
+
+    <div>
+      <strong>Email:</strong> <%= @order.customer_email %>
+    </div>
+
+    <div>
+      <strong>Status:</strong>
+      <span class="status-badge <%= @order.status %>">
+        <%= @order.status %>
+      </span>
+    </div>
+
+    <div>
+      <strong>Created:</strong>
+      <%= @order.created_at.strftime("%d/%m/%Y %H:%M") %>
+    </div>
+  </div>
+
+  <!-- Items table -->
+  <div class="table-wrapper">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th width="120">Price</th>
+          <th width="100">Qty</th>
+          <th width="140">Subtotal</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @order.order_items.each do |item| %>
+          <tr>
+            <td>
+              <%= item.book.title %>
+            </td>
+
+            <td>
+              $<%= number_with_precision(item.unit_price, precision: 2) %>
+            </td>
+
+            <td>
+              <%= item.quantity %>
+            </td>
+
+            <td>
+              $<%= number_with_precision(item.subtotal, precision: 2) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Total -->
+  <div class="order-summary">
+    <div class="total-row">
+      <span>Total:</span>
+      <strong>$<%= number_with_precision(@order.total_price, precision: 2) %></strong>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="order-actions">
+    <%= link_to "Edit", edit_admin_order_path(@order), class: "btn-warning" %>
+
+    <%= link_to "Delete",
+        admin_order_path(@order),
+        data: {
+          turbo_method: :delete,
+          turbo_confirm: "Are you sure?"
+        },
+        class: "btn-danger" %>
+  </div>
+</div>

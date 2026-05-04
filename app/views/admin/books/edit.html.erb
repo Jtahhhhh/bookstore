@@ -1,0 +1,10 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">New Book</h1>
+    <p class="page-subtitle">Create a new book for your store</p>
+  </div>
+
+  <%= link_to "← Back to Books", admin_books_path, class: "btn-secondary" %>
+</div>
+
+<%= render "form", book: @book  %>

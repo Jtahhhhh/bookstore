@@ -1,0 +1,71 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Orders</h1>
+    <p class="page-subtitle">Manage all orders in your store</p>
+  </div>
+
+  <%= link_to "＋ New Order", new_admin_order_path, class: "btn-primary" %>
+</div>
+
+<div class="table-wrapper">
+  <table class="custom-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Customer</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th>Created At</th>
+        <th width="220">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @orders.each do |order| %>
+        <tr>
+          <td>
+            <strong>#<%= order.id %></strong>
+          </td>
+
+          <td>
+            <%= order.try(:customer_name) || "Guest" %>
+          </td>
+
+          <td>
+            <span class="status-badge <%= order.status %>">
+              <%= order.status || "pending" %>
+            </span>
+          </td>
+
+          <td>
+            $<%= order.try(:total_price) || 0 %>
+          </td>
+
+          <td>
+            <%= order.created_at.strftime("%d/%m/%Y") %>
+          </td>
+
+          <td>
+            <div class="table-actions">
+              <%= link_to "View",
+                  admin_order_path(order),
+                  class: "btn-secondary btn-sm" %>
+
+              <%= link_to "Edit",
+                  edit_admin_order_path(order),
+                  class: "btn-warning btn-sm" %>
+
+              <%= link_to "Delete",
+                  admin_order_path(order),
+                  data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure?"
+                  },
+                  class: "btn-danger btn-sm" %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

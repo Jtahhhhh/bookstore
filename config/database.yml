@@ -1,0 +1,36 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: postgres
+  password: password
+  host: db
+  port: 5432
+
+development:
+  <<: *default
+  database: bookstore_development
+
+test:
+  <<: *default
+  database: bookstore_test
+
+production:
+  primary:
+    <<: *default
+    database: bookstore_production
+
+  cache:
+    <<: *default
+    database: bookstore_cache
+    migrations_paths: db/cache_migrate
+
+  queue:
+    <<: *default
+    database: bookstore_queue
+    migrations_paths: db/queue_migrate
+
+  cable:
+    <<: *default
+    database: bookstore_cable
+    migrations_paths: db/cable_migrate

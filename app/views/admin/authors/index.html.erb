@@ -1,0 +1,46 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Authors</h1>
+    <p class="page-subtitle">Manage all authors in your store</p>
+  </div>
+
+  <%= link_to "＋ New Author", new_admin_author_path, class: "btn-primary" %>
+</div>
+
+<div class="grid">
+  <% @authors.each do |author| %>
+    <div class="card">
+      <div class="card-header">
+        <div class="avatar">
+          <%= author.name.to_s.first&.upcase || "A" %>
+        </div>
+
+        <div>
+          <h3 class="name"><%= author.name %></h3>
+          <p class="meta">
+            <%= pluralize(author.books.count, "book") if author.respond_to?(:books) %>
+          </p>
+        </div>
+      </div>
+
+      <% if author.respond_to?(:bio) && author.bio.present? %>
+        <p class="bio">
+          <%= truncate(author.bio, length: 120) %>
+        </p>
+      <% end %>
+
+      <div class="actions">
+        <%= link_to "View", admin_author_path(author), class: "btn-secondary" %>
+        <%= link_to "Edit", edit_admin_author_path(author), class: "btn-warning" %>
+
+        <%= link_to "Delete",
+            admin_author_path(author),
+            data: {
+              turbo_method: :delete,
+              turbo_confirm: "Are you sure?"
+            },
+            class: "btn-danger" %>
+      </div>
+    </div>
+  <% end %>
+</div>

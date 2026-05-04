@@ -1,0 +1,38 @@
+<div class="form-page">
+  <div class="form-card">
+
+    <%= form_with model: [:admin, @author], local: true, class: "custom-form" do |f| %>
+
+      <% if @author.errors.any? %>
+        <div class="error-box">
+          <h4>
+            <%= pluralize(@author.errors.count, "error") %> prohibited this author from being saved:
+          </h4>
+
+          <ul>
+            <% @author.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <h3 class="name"><%= @author.name %></h3>
+
+      <p class="bio"><%= @author.bio %></p>
+
+      <div class="actions">
+        <%= link_to "Edit", edit_admin_author_path(@author), class: "btn-warning" %>
+
+        <%= link_to "Delete",
+            admin_author_path(@author),
+            data: {
+              turbo_method: :delete,
+              turbo_confirm: "Are you sure?"
+            },
+            class: "btn-danger" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

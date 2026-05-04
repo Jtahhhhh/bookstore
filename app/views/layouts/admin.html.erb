@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bookstore Admin</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= javascript_importmap_tags %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <h2>Bookstore</h2>
+
+        <nav>
+          <%= link_to "Dashboard", admin_root_path %>
+          <%= link_to "Authors", admin_authors_path %>
+          <%= link_to "Books", admin_books_path %>
+          <%= link_to "Categories", admin_categories_path %>
+          <%= link_to "Orders", admin_orders_path %>
+        </nav>
+      </aside>
+
+      <div class="admin-main">
+        <header class="admin-header">
+          <h1>Admin Panel</h1>
+          <div>Admin</div>
+        </header>
+
+        <main class="admin-content">
+          <%= yield %>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

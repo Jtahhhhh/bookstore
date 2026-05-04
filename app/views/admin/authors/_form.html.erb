@@ -1,0 +1,36 @@
+<%= form_with model: [:admin, @author], local: true, class: "custom-form" do |f| %>
+
+  <% if @author.errors.any? %>
+    <div class="error-box">
+        <h4>
+            <%= pluralize(@author.errors.count, "error") %> prohibited this author from being saved:
+        </h4>
+
+        <ul>
+            <% @author.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: "form-input", placeholder: "Enter author name" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :bio %>
+        <%= f.text_area :bio,
+            rows: 5,
+            class: "form-input",
+            placeholder: "Write author biography..." %>
+      </div>
+
+      <div class="form-actions">
+        <%= link_to "Cancel", admin_authors_path, class: "btn-secondary" %>
+
+        <%= f.submit "Update Author", class: "btn-primary" %>
+      </div>
+
+    <% end %>

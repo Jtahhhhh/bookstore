@@ -1,0 +1,35 @@
+<%= form_with model: [:admin, category], local: true, class: "custom-form" do |f| %>
+
+      <% if category.errors.any? %>
+        <div class="error-box">
+          <h4>
+            <%= pluralize(category.errors.count, "error") %> prohibited this category from being saved:
+          </h4>
+
+          <ul>
+            <% category.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :name %>
+        <%= f.text_field :name, class: "form-input", placeholder: "Enter category name" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :slug %>
+        <%= f.text_area :slug,
+            rows: 5,
+            class: "form-input",
+            placeholder: "Write category slug..." %>
+      </div>
+
+      <div class="form-actions">
+        <%= link_to "Cancel", admin_categories_path, class: "btn-secondary" %>
+        <%= f.submit category.new_record? ? "Create Category" : "Update Category", class: "btn-primary" %>
+      </div>
+
+    <% end %>

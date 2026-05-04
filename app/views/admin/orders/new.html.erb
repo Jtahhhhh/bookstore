@@ -1,0 +1,10 @@
+<div class="page-header">
+  <div>
+    <h1 class="page-title">New Order</h1>
+    <p class="page-subtitle">Create a new order for your store</p>
+  </div>
+
+  <%= link_to "← Back to Orders", admin_orders_path, class: "btn-secondary" %>
+</div>
+
+<%= render "form", order: @order %>
