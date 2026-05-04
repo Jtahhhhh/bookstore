@@ -8,6 +8,9 @@ class Order < ApplicationRecord
     validates :customer_email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
     accepts_nested_attributes_for :order_items, allow_destroy: true
 
+
+    scope :with_items, -> { includes(:order_items, :books) }
+
      private
 
     def calculate_total_price
