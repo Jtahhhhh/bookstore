@@ -2,7 +2,7 @@ class Admin::OrdersController < Admin::BaseController
     before_action :set_order, only: [:show, :edit, :update]
 
     def index
-        @orders = Order.includes(:order_items, :books).all.order(created_at: :desc)
+        @orders = Order.with_items.all.order(created_at: :desc)
     end
 
     def new
@@ -46,7 +46,7 @@ class Admin::OrdersController < Admin::BaseController
 
     private
     def set_order
-        @order = Order.includes(:order_items, :books).find(params[:id])
+        @order = Order.with_items.find(params[:id])
     end
 
     def order_params
