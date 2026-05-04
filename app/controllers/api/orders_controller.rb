@@ -4,6 +4,8 @@ class Api::OrdersController < Api::BaseController
         result = Orders::CreateService.new(order_params, customer_params).call
 
         render json: result.except(:status), status: result[:status]
+        rescue => e
+        render json: { error: e.message }, status: :internal_server_error
     end
 
 
