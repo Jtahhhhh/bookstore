@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   namespace :api do
       resources :books, only: [:index, :show]
       resources :orders, only: [:create]
+      namespace :webhooks do
+        resources :payments, only: [:create]
+      end
       resources :wallets, only: [] do
         member do
           post 'deposit', to: 'wallets#deposit_funds'
@@ -20,6 +23,7 @@ Rails.application.routes.draw do
           post 'transfer', to: 'wallets#transfer_funds'
         end
       end
+      
   end
   get "up" => "rails/health#show", as: :rails_health_check
 
