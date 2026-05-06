@@ -1,11 +1,7 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-# This model initially had no columns defined. If you add columns to the
-# model remove the "{}" from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
+pending_reservation_item:
+  reservation: pending_reservation
+  flash_sale_item: ruby_sale_item
+  quantity: 1
+  unit_price: 80.0
+  subtotal: 80.0
 # column: value
