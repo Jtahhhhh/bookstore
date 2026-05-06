@@ -16,6 +16,14 @@ Rails.application.routes.draw do
       namespace :webhooks do
         resources :payments, only: [:create]
       end
+      resources :wallets, only: [] do
+        member do
+          post 'deposit', to: 'wallets#deposit_funds'
+          post 'withdraw', to: 'wallets#withdraw_funds'
+          post 'transfer', to: 'wallets#transfer_funds'
+        end
+      end
+      
   end
   get "up" => "rails/health#show", as: :rails_health_check
 
