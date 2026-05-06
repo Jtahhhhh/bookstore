@@ -5,6 +5,8 @@ class Wallet < ApplicationRecord
     validates :balance, numericality: { greater_than_or_equal_to: 0 }
     
     def add_funds(amount, transaction_key, meta_data = {})
+        raise ActiveRecord::RecordInvalid, self unless amount.to_d.positive?
+
         self.balance += amount
         save!
     
@@ -18,6 +20,10 @@ class Wallet < ApplicationRecord
     end
     
     def deduct_funds(amount, transaction_key, meta_data = {})
+        raise ActiveRecord::RecordInvalid, self unless amount.to_d.positive?
+        errors.add(:balance, "insufficient funds") if balance < amount
+        raise ActiveRecord::RecordInvalid, self if errors[:balance].any?
+
         self.balance -= amount
         save!
         ledger_entries.create!(
