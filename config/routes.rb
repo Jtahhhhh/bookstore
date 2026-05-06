@@ -13,6 +13,9 @@ Rails.application.routes.draw do
   namespace :api do
       resources :books, only: [:index, :show]
       resources :orders, only: [:create]
+      namespace :webhooks do
+        resources :payments, only: [:create]
+      end
   end
   get "up" => "rails/health#show", as: :rails_health_check
 
