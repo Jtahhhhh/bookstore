@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_06_033605) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_06_062416) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -69,6 +69,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_033605) do
     t.datetime "start_time", null: false
     t.string "status", default: "active", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "ledger_entries", force: :cascade do |t|
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.decimal "balance_after", precision: 10, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.string "entry_type", null: false
+    t.jsonb "meta_data", default: {}, null: false
+    t.string "transaction_key", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "wallet_id", null: false
+    t.index ["transaction_key"], name: "index_ledger_entries_on_transaction_key", unique: true
+    t.index ["wallet_id"], name: "index_ledger_entries_on_wallet_id"
   end
 
   create_table "order_items", force: :cascade do |t|
@@ -141,11 +154,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_033605) do
     t.index ["idempotency_key"], name: "index_reservations_on_idempotency_key", unique: true
   end
 
+  create_table "wallets", force: :cascade do |t|
+    t.decimal "balance", precision: 10, scale: 2, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "user_id", null: false
+    t.index ["user_id"], name: "index_wallets_on_user_id", unique: true
+  end
+
   add_foreign_key "book_categories", "books"
   add_foreign_key "book_categories", "categories"
   add_foreign_key "books", "authors"
   add_foreign_key "flash_sale_items", "books"
   add_foreign_key "flash_sale_items", "flash_sales"
+  add_foreign_key "ledger_entries", "wallets"
   add_foreign_key "order_items", "books"
   add_foreign_key "order_items", "orders"
   add_foreign_key "payments", "orders"

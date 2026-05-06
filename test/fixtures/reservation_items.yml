@@ -1,0 +1,7 @@
+pending_reservation_item:
+  reservation: pending_reservation
+  flash_sale_item: ruby_sale_item
+  quantity: 1
+  unit_price: 80.0
+  subtotal: 80.0
+# column: value

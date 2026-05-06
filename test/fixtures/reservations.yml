@@ -1,0 +1,6 @@
+pending_reservation:
+  flash_sale: active_sale
+  idempotency_key: existing-key
+  status: pending
+  expires_at: <%= 10.minutes.from_now %>
+# column: value

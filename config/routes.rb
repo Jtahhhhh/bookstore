@@ -13,6 +13,10 @@ Rails.application.routes.draw do
   namespace :api do
       resources :books, only: [:index, :show]
       resources :orders, only: [:create]
+
+      resources :flash_sales do
+        resources :reservations, only: [:create]
+      end
       namespace :webhooks do
         resources :payments, only: [:create]
       end

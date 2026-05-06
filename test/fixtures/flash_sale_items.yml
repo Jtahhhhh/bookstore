@@ -1,0 +1,6 @@
+ruby_sale_item:
+  flash_sale: active_sale
+  book: ruby_book
+  sale_price: 80.0
+  stock: 5
+# column: value
