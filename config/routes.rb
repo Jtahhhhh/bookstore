@@ -28,13 +28,6 @@ Rails.application.routes.draw do
         end
       end
       
-      resources :coupons, only: [] do
-        collection do
-          post :preview
-          post :apply
-        end
-      end
-      
   end
   get "up" => "rails/health#show", as: :rails_health_check
 
