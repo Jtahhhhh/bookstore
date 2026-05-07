@@ -1,12 +1,15 @@
+# app/services/concerns/service_response.rb
+
 module ServiceResponse
-  def success(data = {}, message: nil, status: :ok)
-    {
-      status: status,
-      message: message
-    }.merge(data)
+  def success(message, data = {})
+    response(:created, message, data)
   end
 
-  def error(message, status: :unprocessable_entity)
+  def ok(message, data = {})
+    response(:ok, message, data)
+  end
+
+  def error(message, status = :unprocessable_entity)
     {
       status: status,
       error: message
@@ -14,6 +17,15 @@ module ServiceResponse
   end
 
   def not_found(message)
-    error(message, status: :not_found)
+    error(message, :not_found)
+  end
+
+  private
+
+  def response(status, message, data = {})
+    {
+      status: status,
+      message: message
+    }.merge(data)
   end
 end
