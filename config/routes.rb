@@ -12,7 +12,11 @@ Rails.application.routes.draw do
 
   namespace :api do
       resources :books, only: [:index, :show]
-      resources :orders, only: [:create]
+      resources :orders, only: [:create] do
+        member do
+          post 'pay_with_wallet', to:'orders#pay_with_wallet'
+        end
+      end
 
       resources :flash_sales do
         resources :reservations, only: [:create]
