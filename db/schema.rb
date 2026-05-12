@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_06_062416) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_06_100246) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -48,6 +48,37 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_062416) do
     t.string "slug"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_categories_on_slug", unique: true
+  end
+
+  create_table "coupon_redemptions", force: :cascade do |t|
+    t.bigint "coupon_id", null: false
+    t.datetime "created_at", null: false
+    t.decimal "discount_amount", precision: 10, scale: 2, null: false
+    t.decimal "final_amount", precision: 10, scale: 2, null: false
+    t.string "idempotency_key", null: false
+    t.string "order_id", null: false
+    t.decimal "original_amount", precision: 10, scale: 2, null: false
+    t.datetime "updated_at", null: false
+    t.string "user_id", null: false
+    t.index ["coupon_id", "user_id", "order_id"], name: "index_coupon_redemptions_on_coupon_id_and_user_id_and_order_id", unique: true
+    t.index ["coupon_id"], name: "index_coupon_redemptions_on_coupon_id"
+    t.index ["idempotency_key"], name: "index_coupon_redemptions_on_idempotency_key", unique: true
+  end
+
+  create_table "coupons", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "code", null: false
+    t.datetime "created_at", null: false
+    t.string "discount_type", null: false
+    t.decimal "discount_value", precision: 10, scale: 2, null: false
+    t.datetime "ends_at", null: false
+    t.decimal "max_discount_amount", precision: 10, scale: 2
+    t.decimal "min_order_amount", precision: 10, scale: 2
+    t.datetime "starts_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "usage_limit", default: 1
+    t.integer "used_count", default: 0
+    t.index ["code"], name: "index_coupons_on_code", unique: true
   end
 
   create_table "flash_sale_items", force: :cascade do |t|
@@ -165,6 +196,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_06_062416) do
   add_foreign_key "book_categories", "books"
   add_foreign_key "book_categories", "categories"
   add_foreign_key "books", "authors"
+  add_foreign_key "coupon_redemptions", "coupons"
   add_foreign_key "flash_sale_items", "books"
   add_foreign_key "flash_sale_items", "flash_sales"
   add_foreign_key "ledger_entries", "wallets"
