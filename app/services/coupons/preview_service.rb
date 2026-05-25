@@ -17,7 +17,7 @@ module Coupons
             return error("Order amount does not meet minimum requirement") if original_amount < coupon.min_order_amount
             discount_amount = calculate_discount_amount(coupon,original_amount)
             final_amout = calculate_final_amount(original_amount, discount_amount)
-            return success("Coupon can be applied", {
+            return ok("Coupon can be applied", {
                 "coupon_code": @coupon_code,
                 "original_amount": original_amount,
                 "discount_amount": discount_amount,

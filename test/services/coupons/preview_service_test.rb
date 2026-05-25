@@ -5,6 +5,12 @@ module Coupons
     def setup
       CouponRedemption.delete_all
       Coupon.delete_all
+      User.delete_all
+      @user = User.create!(
+        email: "coupon-preview@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
 
       @order_payload = {
         order_id: 1,
@@ -103,7 +109,7 @@ module Coupons
     def params(code)
       {
         coupon_code: code,
-        user_id: "user_1",
+        user_id: @user.id,
         order: @order_payload
       }
     end

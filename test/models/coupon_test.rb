@@ -6,7 +6,7 @@ class CouponTest < ActiveSupport::TestCase
   # end
 
   test "Coupon requires code" do 
-    cp = Coupons.new(
+    cp = Coupon.new(
       discount_type: "percentage",
       discount_value: 20,
       min_order_amount: 100_000,
@@ -21,8 +21,8 @@ class CouponTest < ActiveSupport::TestCase
   end
 
   test "Coupon discount_type must be percentage/fixed_amount" do
-    cp = Coupons.new(
-      code: '123'
+    cp = Coupon.new(
+      code: "123",
       discount_type: "paid",
       discount_value: -5,
       min_order_amount: 100_000,
@@ -37,8 +37,8 @@ class CouponTest < ActiveSupport::TestCase
   end
 
   test "Coupon discount_value must be > 0" do
-    cp = Coupons.new(
-      code: '123'
+    cp = Coupon.new(
+      code: "123",
       discount_type: "percentage",
       discount_value: -5,
       min_order_amount: 100_000,
@@ -53,10 +53,10 @@ class CouponTest < ActiveSupport::TestCase
   end
 
   test "Coupon used_count must be >= 0" do
-    cp = Coupons.new(
-      code: '123'
+    cp = Coupon.new(
+      code: "123",
       discount_type: "percentage",
-      discount_value: -5,
+      discount_value: 5,
       min_order_amount: 100_000,
       max_discount_amount: 50_000,
       usage_limit: 100,

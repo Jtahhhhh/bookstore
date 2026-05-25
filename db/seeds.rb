@@ -16,6 +16,7 @@ PaymentEvent.delete_all
 Payment.delete_all
 LedgerEntry.delete_all
 Wallet.delete_all
+User.delete_all
 ReservationItem.delete_all
 Reservation.delete_all
 FlashSaleItem.delete_all
@@ -27,6 +28,12 @@ Book.delete_all
 Category.delete_all
 Author.delete_all
 Coupon.delete_all
+
+user = User.create!(
+  email: "user1@example.com",
+  password: "password",
+  password_confirmation: "password"
+)
 
 author = Author.create!(
   name: "Test Author",
@@ -134,7 +141,7 @@ Coupon.create!(
 )
 
 Wallet.create!(
-  user_id: "user_1",
+  user_id: user.id,
   balance: 1_000_000
 )
 

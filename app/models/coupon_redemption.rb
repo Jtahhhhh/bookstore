@@ -1,5 +1,6 @@
 class CouponRedemption < ApplicationRecord
     belongs_to :coupon
+    belongs_to :user
     
     validates :user_id, presence: true
     validates :coupon_id, presence: true

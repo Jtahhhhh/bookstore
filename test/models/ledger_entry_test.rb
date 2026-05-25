@@ -5,7 +5,7 @@ class LedgerEntryTest < ActiveSupport::TestCase
   #   assert true
   # end
   test "should create ledger entry with valid attributes" do
-    wallet = Wallet.create!(user_id: "user5", balance: 100)
+    wallet = Wallet.create!(user_id: create_user.id, balance: 100)
     ledger_entry = LedgerEntry.new(
       wallet: wallet,
       transaction_key: "test_transaction_key_3",
@@ -18,7 +18,7 @@ class LedgerEntryTest < ActiveSupport::TestCase
   end
 
   test "should not create ledger entry without transaction_key" do
-    wallet = Wallet.create!(user_id: "user6", balance: 100)
+    wallet = Wallet.create!(user_id: create_user.id, balance: 100)
     ledger_entry = LedgerEntry.new(
       wallet: wallet,
       entry_type: "debit",
@@ -30,7 +30,7 @@ class LedgerEntryTest < ActiveSupport::TestCase
   end
 
   test "should not create ledger entry with duplicate transaction_key" do
-    wallet = Wallet.create!(user_id: "user7", balance: 100)
+    wallet = Wallet.create!(user_id: create_user.id, balance: 100)
     LedgerEntry.create!(
       wallet: wallet,
       transaction_key: "test_transaction_key_4",
@@ -48,5 +48,15 @@ class LedgerEntryTest < ActiveSupport::TestCase
       meta_data: { note: "Duplicate ledger entry" }
     )
     assert_not duplicate_ledger_entry.save
+  end
+
+  private
+
+  def create_user
+    User.create!(
+      email: "ledger-#{SecureRandom.hex(4)}@example.com",
+      password: "password",
+      password_confirmation: "password"
+    )
   end
 end

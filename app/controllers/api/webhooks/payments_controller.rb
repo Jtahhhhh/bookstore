@@ -1,4 +1,5 @@
 class Api::Webhooks::PaymentsController < Api::BaseController
+    skip_before_action :authenticate_user!
     before_action :authenticate_webhook!
     def create
         result = Payments::ProcessWebhook.new(payment_params).call
