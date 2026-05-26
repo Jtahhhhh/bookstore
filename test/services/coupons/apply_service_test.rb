@@ -5,6 +5,12 @@ module Coupons
     def setup
       CouponRedemption.delete_all
       Coupon.delete_all
+      User.delete_all
+      @user = User.create!(
+        email: "coupon-apply@example.com",
+        password: "password",
+        password_confirmation: "password"
+      )
 
       @order_payload = {
         order_id: "order_1001",
@@ -84,7 +90,7 @@ module Coupons
       {
         idempotency_key: idempotency_key,
         coupon_code: "RUBY20",
-        user_id: "user_1",
+        user_id: @user.id,
         order: @order_payload
       }
     end

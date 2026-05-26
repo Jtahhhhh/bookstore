@@ -2,6 +2,7 @@ require "test_helper"
 
 class Api::ReservationsControllerTest < ActionDispatch::IntegrationTest
   test "creates reservation from top-level idempotency key and items" do
+    sign_in_test_user
     flash_sale = flash_sales(:active_sale)
     sale_item = flash_sale_items(:ruby_sale_item)
 
@@ -21,6 +22,7 @@ class Api::ReservationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "returns validation error when idempotency key is missing" do
+    sign_in_test_user
     flash_sale = flash_sales(:active_sale)
     sale_item = flash_sale_items(:ruby_sale_item)
 

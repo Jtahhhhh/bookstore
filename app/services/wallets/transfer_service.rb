@@ -5,6 +5,7 @@ module Wallets
       @transaction_key = transfer_params[:transaction_key]
       @wallet_id = transfer_params[:wallet_id]
       @meta_data = transfer_params[:meta_data] || {}
+      @user_id = transfer_params[:user_id]
       @destination_user_id = transfer_params[:destination_user_id]
     end
 
@@ -12,7 +13,7 @@ module Wallets
       return error("Transaction key is required") if @transaction_key.blank?
       return error("Amount must be greater than 0") unless @amount.positive?
 
-      source_wallet = find_wallet(@wallet_id)
+      source_wallet = find_wallet
       destination_wallet = Wallet.find_by(user_id: @destination_user_id)
       return not_found("Source or destination wallet not found") unless source_wallet && destination_wallet
 
@@ -74,7 +75,10 @@ module Wallets
       { status: :not_found, error: message }
     end
 
-    def find_wallet(identifier)
+    def find_wallet
+      return Wallet.find_by(user_id: @user_id) if @user_id.present?
+
+      identifier = @wallet_id
       Wallet.find_by(id: identifier) || Wallet.find_by(user_id: identifier)
     end
   end

@@ -4,6 +4,7 @@ module Wallets
       @amount = withdraw_params[:amount].to_d
       @transaction_key = withdraw_params[:transaction_key]
       @meta_data = withdraw_params[:meta_data] || {}
+      @user_id = withdraw_params[:user_id]
       @wallet_id = withdraw_params[:wallet_id]
     end
 
@@ -45,6 +46,8 @@ module Wallets
     end
 
     def find_wallet
+      return Wallet.find_by(user_id: @user_id) if @user_id.present?
+
       Wallet.find_by(id: @wallet_id) || Wallet.find_by(user_id: @wallet_id)
     end
   end

@@ -4,6 +4,7 @@ module Wallets
       @amount = deposit_params[:amount].to_d
       @transaction_key = deposit_params[:transaction_key]
       @meta_data = deposit_params[:meta_data] || {}
+      @user_id = deposit_params[:user_id]
       @wallet_id = deposit_params[:wallet_id]
     end
 
@@ -43,6 +44,8 @@ module Wallets
     end
 
     def find_wallet
+      return Wallet.find_by(user_id: @user_id) if @user_id.present?
+
       Wallet.find_by(id: @wallet_id) || Wallet.find_by(user_id: @wallet_id)
     end
   end

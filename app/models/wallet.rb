@@ -1,4 +1,5 @@
 class Wallet < ApplicationRecord
+    belongs_to :user
     has_many :ledger_entries, dependent: :destroy
     
     validates :user_id, presence: true, uniqueness: true
