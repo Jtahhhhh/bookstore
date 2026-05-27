@@ -50,6 +50,8 @@ jobs:
         with:
           ruby-version: 3.3.0
           bundler-cache: true
+      - name: Fix bin permissions
+        run: chmod +x bin/rails bin/rake bin/bundle
 
       - name: Setup database
         run: |
