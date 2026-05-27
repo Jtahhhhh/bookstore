@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_25_020617) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_27_050502) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -131,9 +131,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_25_020617) do
     t.datetime "created_at", null: false
     t.string "customer_email"
     t.string "customer_name"
+    t.decimal "discount_amount", precision: 10, scale: 2, default: "0.0", null: false
+    t.string "idempotency_key"
+    t.decimal "original_amount", precision: 10, scale: 2, default: "0.0", null: false
     t.string "status", default: "pending"
     t.decimal "total_price", precision: 10, scale: 2
     t.datetime "updated_at", null: false
+    t.index ["idempotency_key"], name: "index_orders_on_idempotency_key", unique: true
   end
 
   create_table "payment_events", force: :cascade do |t|
