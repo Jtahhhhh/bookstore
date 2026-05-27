@@ -1,5 +1,4 @@
 class Order < ApplicationRecord
-    before_save :calculate_total_price
 
     has_many :order_items, dependent: :destroy
     has_many :books, through: :order_items
@@ -10,10 +9,4 @@ class Order < ApplicationRecord
 
 
     scope :with_items, -> { includes(:order_items, :books) }
-
-     private
-
-    def calculate_total_price
-        self.total_price = order_items.sum(&:subtotal)
-    end
 end

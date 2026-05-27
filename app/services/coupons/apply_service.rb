@@ -1,11 +1,13 @@
 module Coupons
   class ApplyService
     include ServiceResponse
-    def initialize(attribute)
-      @idempotency_key = attribute[:idempotency_key]
+    def initialize(attribute, order)
+      attribute = attribute.to_h.with_indifferent_access
+
       @coupon_code = attribute[:coupon_code]
       @user_id = attribute[:user_id]
-      @order = attribute[:order]
+      @order = order
+      @idempotency_key = "order_coupon:#{order.id}:#{@coupon_code}"
     end
 
     def call
@@ -19,7 +21,7 @@ module Coupons
       return error("Coupon not started") if coupon.starts_at > Time.current
       return error("Coupon expired") if coupon.ends_at < Time.current
 
-      original_amount = calculate_original_amount(@order[:items])
+      original_amount = calculate_original_amount(@order.order_items)
 
       if coupon.min_order_amount.present? && original_amount < coupon.min_order_amount
         return error("Order amount does not meet minimum requirement")
@@ -40,14 +42,21 @@ module Coupons
 
           redemption = coupon.coupon_redemptions.create!(
             user_id: @user_id,
-            order_id: @order[:order_id],
+            order_id: @order.id,
             idempotency_key: @idempotency_key,
             discount_amount: discount_amount,
             original_amount: original_amount,
             final_amount: final_amount
           )
 
-          coupon.increment!(:used_count)
+          @order.update!(
+            original_amount: original_amount,
+            discount_amount: discount_amount,
+            total_price: final_amount
+          )
+
+          coupon.used_count += 1
+          coupon.save!
         end
       end
 
@@ -82,9 +91,7 @@ module Coupons
     end
 
     def calculate_original_amount(items)
-      items.sum do |item|
-        item[:unit_price].to_d * item[:quantity].to_i
-      end
+      items.sum(&:subtotal)
     end
 
     def calculate_discount_amount(coupon, original_amount)

@@ -32,7 +32,6 @@ Rails.application.routes.draw do
       resources :coupons, only: [] do
         collection do
           post :preview
-          post :apply
         end
       end
       

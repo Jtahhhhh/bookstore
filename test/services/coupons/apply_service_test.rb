@@ -5,20 +5,55 @@ module Coupons
     def setup
       CouponRedemption.delete_all
       Coupon.delete_all
+      OrderItem.delete_all
+      Order.delete_all
+      Book.delete_all
       User.delete_all
+      Author.delete_all
+      @authur = Author.create!(
+        name: "Robert C. Martin"
+      )
       @user = User.create!(
         email: "coupon-apply@example.com",
         password: "password",
         password_confirmation: "password"
       )
 
-      @order_payload = {
-        order_id: "order_1001",
-        items: [
-          { book_id: 1, title: "Ruby Core", unit_price: "100000", quantity: 2 },
-          { book_id: 2, title: "Rails API", unit_price: "150000", quantity: 1 }
-        ]
-      }
+      @book_1 = Book.create!(
+        author_id: @authur.id,
+        title: "Ruby Core",
+        price: 100_000,
+        stock: 10
+      )
+
+      @book_2 = Book.create!(
+        author_id: @authur.id,
+        title: "Rails API",
+        price: 150_000,
+        stock: 10
+      )
+
+      @order = Order.create!(
+        customer_name: "Coupon User",
+        customer_email: "coupon-apply@example.com",
+        idempotency_key: "order-1001",
+        original_amount: 350_000,
+        total_price: 350_000
+      )
+
+      @order.order_items.create!(
+        book: @book_1,
+        quantity: 2,
+        unit_price: 100_000,
+        subtotal: 200_000
+      )
+
+      @order.order_items.create!(
+        book: @book_2,
+        quantity: 1,
+        unit_price: 150_000,
+        subtotal: 150_000
+      )
 
       @coupon = create_coupon!(
         code: "RUBY20",
@@ -32,7 +67,7 @@ module Coupons
 
     test "valid apply creates redemption" do
       assert_difference "CouponRedemption.count", 1 do
-        result = ApplyService.new(params).call
+        result = ApplyService.new(params, @order).call
 
         assert_equal :created, result[:status]
         assert_equal "Coupon applied successfully", result[:message]
@@ -44,16 +79,16 @@ module Coupons
 
     test "valid apply increments used_count by 1" do
       assert_difference -> { @coupon.reload.used_count }, 1 do
-        ApplyService.new(params).call
+        ApplyService.new(params, @order).call
       end
     end
 
     test "retry same idempotency_key does not increment used_count again" do
-      first_result = ApplyService.new(params(idempotency_key: "same-key")).call
+      first_result = ApplyService.new(params, @order).call
       assert_equal :created, first_result[:status]
 
       assert_no_difference -> { @coupon.reload.used_count } do
-        second_result = ApplyService.new(params(idempotency_key: "same-key")).call
+        second_result = ApplyService.new(params, @order).call
 
         assert_equal :ok, second_result[:status]
         assert_equal "Coupon already applied", second_result[:message]
@@ -66,21 +101,10 @@ module Coupons
       @coupon.update!(usage_limit: 1, used_count: 1)
 
       assert_no_difference "CouponRedemption.count" do
-        result = ApplyService.new(params).call
+        result = ApplyService.new(params, @order).call
 
         assert_equal :unprocessable_entity, result[:status]
         assert_equal "Coupon usage limit reached", result[:error]
-      end
-    end
-
-    test "same coupon user order cannot redeem twice" do
-      first_result = ApplyService.new(params(idempotency_key: "key-1")).call
-      assert_equal :created, first_result[:status]
-
-      assert_no_difference "CouponRedemption.count" do
-        result = ApplyService.new(params(idempotency_key: "key-2")).call
-
-        assert_equal :unprocessable_entity, result[:status]
       end
     end
 
@@ -88,10 +112,8 @@ module Coupons
 
     def params(idempotency_key: "apply-order-1001-ruby20")
       {
-        idempotency_key: idempotency_key,
         coupon_code: "RUBY20",
-        user_id: @user.id,
-        order: @order_payload
+        user_id: @user.id
       }
     end
 
